@@ -1,0 +1,663 @@
+/* Typography & Design System Variables*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-primary: #e8f5bd;
+  /* Signature pale green text & accents */
+  --color-bg-dark: #1a1d26;
+  /* Outer background */
+  --color-bg-main: #212530;
+  /* Main Figma artboard canvas */
+  --color-bg-footer: #171b24;
+  /* Footer background */
+
+  /* Fonts */
+  --font-family: 'Noto Sans KR', 'Inter', sans-serif;
+  --font-inter: 'Inter', 'Noto Sans KR', sans-serif;
+
+  /* Transitions & Animation details */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg-dark);
+  font-family: var(--font-family);
+  color: var(--color-primary);
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  word-break: keep-all;
+  /* Prevent awkward single-character wrapping in Korean */
+}
+
+/* Outer layout wrapper */
+.page-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+/* Fixed-size canvas container representing the original Figma artboard (1920x14729) */
+.figma-container {
+  position: relative;
+  width: 1920px;
+  height: 14729px;
+  background-color: var(--color-bg-main);
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+}
+
+/* Floating Sidebar Menu & Interactive Volume Bar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  /* Collapsed height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 100;
+  pointer-events: auto;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible;
+  /* so elements can overlap when collapsed */
+}
+
+.sidebar:hover {
+  height: 250px;
+  /* Expanded height */
+}
+
+.volume-control-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 29px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+  transform-origin: top center;
+}
+
+.sidebar:not(:hover) .volume-control-wrapper {
+  transform: translateY(40px) scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Sound Toggle Button */
+.volume-btn {
+  width: 48px;
+  height: 48px;
+  background-color: transparent;
+  border: 1px solid var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: var(--transition-smooth);
+  outline: none;
+}
+
+.volume-btn:hover,
+.volume-btn.playing {
+  background-color: rgba(232, 245, 189, 0.25);
+  box-shadow: 0 0 15px rgba(232, 245, 189, 0.6);
+  transform: scale(1.05);
+}
+
+.volume-icon {
+  width: 30px;
+  height: 30px;
+  color: var(--color-primary);
+}
+
+.volume-icon .wave-inner,
+.volume-icon .wave-outer,
+.volume-icon .mute-line {
+  transition: opacity 0.2s ease;
+}
+
+/* Soundbar Slider Container (revealed on hover) */
+.soundbar-container {
+  position: absolute;
+  left: 60px;
+  top: 0;
+  width: 184px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-15px);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.volume-control-wrapper:hover .soundbar-container {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* Slider Track Styling */
+.soundbar-track-inactive {
+  position: absolute;
+  left: 0;
+  top: 21px;
+  width: 100%;
+  height: 6px;
+  background-color: rgba(232, 245, 189, 0.25);
+  border-radius: 3px;
+}
+
+.soundbar-track-active {
+  position: absolute;
+  left: 0;
+  top: 21px;
+  width: 0%;
+  /* Default volume percentage starts at 0% (muted) */
+  height: 6px;
+  background-color: var(--color-primary);
+  border-radius: 3px;
+  transition: width 0.1s ease;
+}
+
+/* Slider Handle (Knob) */
+.soundbar-knob {
+  position: absolute;
+  left: -20px;
+  /* Placed at 0% volume */
+  top: 4px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-bg-main);
+  border: 1px solid var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, left 0.1s ease;
+  user-select: none;
+}
+
+.soundbar-knob:hover {
+  transform: scale(1.15);
+  background-color: rgba(232, 245, 189, 0.1);
+}
+
+.soundbar-knob-dot {
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+}
+
+/* Scroll Dot Timeline Navigation */
+.nav-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar:not(:hover) .nav-timeline {
+  transform: translateY(-63px);
+  /* Center Dot 1 within the collapsed sidebar */
+}
+
+.timeline-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 29px;
+}
+
+.dot {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: transparent;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dot:hover {
+  background-color: rgba(232, 245, 189, 0.3);
+  box-shadow: 0 0 10px rgba(232, 245, 189, 0.5);
+  transform: scale(1.1);
+}
+
+.dot.active {
+  background-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(232, 245, 189, 0.6);
+}
+
+/* Collapsed state transitions for each dot to center them at Dot 1's position */
+.sidebar:not(:hover) .dot {
+  pointer-events: none;
+}
+
+.sidebar:not(:hover) .dot[data-section="1"] {
+  transform: translateY(0) scale(0);
+  opacity: 0;
+}
+
+.sidebar:not(:hover) .dot[data-section="1"].active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar:not(:hover) .dot[data-section="2"] {
+  transform: translateY(-49px) scale(0);
+  opacity: 0;
+}
+
+.sidebar:not(:hover) .dot[data-section="2"].active {
+  transform: translateY(-49px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar:not(:hover) .dot[data-section="3"] {
+  transform: translateY(-98px) scale(0);
+  opacity: 0;
+}
+
+.sidebar:not(:hover) .dot[data-section="3"].active {
+  transform: translateY(-98px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar:not(:hover) .dot[data-section="4"] {
+  transform: translateY(-147px) scale(0);
+  opacity: 0;
+}
+
+.sidebar:not(:hover) .dot[data-section="4"].active {
+  transform: translateY(-147px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Shared Visual Utilities*/
+.whale-bg {
+  position: absolute;
+  pointer-events: none;
+  object-fit: contain;
+}
+
+/* Grouped Selector for Horizontally-Centered Elements */
+.intro-text,
+.quote-text,
+.desc-1,
+.question-title,
+.mutation-title,
+.mutation-desc,
+.final-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.chat-bubble {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 20px;
+  line-height: 60px;
+  white-space: nowrap;
+}
+
+.bubble-corner,
+.bubble-corner-right {
+  width: 79px;
+  height: 79px;
+}
+
+.bubble-corner-right {
+  transform: scaleX(-1);
+}
+
+/* Section & Element Coordinates */
+
+/* --- Intro Section (y: 0 - 1000) --- */
+.intro-sound-decor-left,
+.intro-sound-decor-right {
+  position: absolute;
+  top: 381.7px;
+  width: 21.8px;
+  height: 45.8px;
+}
+
+.intro-sound-decor-left {
+  left: 876px;
+}
+
+.intro-sound-decor-right {
+  left: 1022px;
+}
+
+.intro-sound-decor-center {
+  position: absolute;
+  left: 930px;
+  top: 386px;
+  width: 60px;
+  height: 60px;
+}
+
+.intro-text {
+  top: 478px;
+  width: 700px;
+  /* Increased to ensure no wrapping in standard browsers */
+  text-align: center;
+
+  h1 {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 60px;
+    white-space: nowrap;
+  }
+
+  p {
+    font-size: 20px;
+    font-weight: 400;
+    /* Noto Sans 400 weight to match Figma */
+    line-height: 60px;
+    white-space: nowrap;
+  }
+}
+
+/* --- Section 1 (y: 1000 - 3900) --- */
+.whale-1 {
+  left: 240px;
+  top: 1034px;
+  width: 1440px;
+  height: 2810px;
+  opacity: 0.4;
+}
+
+.quote-text {
+  top: 1559px;
+  width: 873px;
+  font-size: 32px;
+  line-height: 60px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.desc-1 {
+  top: 3130px;
+  width: 949px;
+  font-size: 20px;
+  line-height: 60px;
+  text-align: center;
+}
+
+/* --- Section 2 (y: 3900 - 5900) --- */
+.stats-title {
+  position: absolute;
+  right: 290px;
+  top: 3880px;
+  font-family: var(--font-inter);
+  font-size: 48px;
+  line-height: 56px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vector-graph {
+  position: absolute;
+  left: 279px;
+  top: 4070px;
+  width: 1371px;
+  height: 796.9px;
+}
+
+.stats-number {
+  position: absolute;
+  right: 290px;
+  top: 4909px;
+  font-family: var(--font-inter);
+  font-size: 48px;
+  line-height: 56px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.bubble-1 {
+  left: 279px;
+  top: 5031px;
+}
+
+.bubble-2 {
+  left: 279px;
+  top: 5148px;
+}
+
+.bubble-3 {
+  left: 1448px;
+  top: 5365px;
+}
+
+.whale-inverted {
+  left: 312px;
+  top: 5094px;
+  width: 1295px;
+  height: 1942px;
+  opacity: 0.1;
+}
+
+/* --- Section 3 (y: 5900 - 7500) --- */
+.desc-isolation {
+  position: absolute;
+  left: 323px;
+  top: 5971px;
+  width: 627px;
+  font-size: 20px;
+  line-height: 60px;
+}
+
+.desc-burnout {
+  position: absolute;
+  left: 801px;
+  top: 6570px;
+  width: 796px;
+  font-size: 20px;
+  line-height: 60px;
+  text-align: right;
+}
+
+.particles-1 {
+  left: -314px;
+  top: 6807px;
+  width: 2877px;
+  height: 2877px;
+  opacity: 0.4;
+}
+
+/* --- Section 4 (y: 7500 - 10100) --- */
+.question-title {
+  top: 7553px;
+  width: 548px;
+  font-size: 32px;
+  line-height: 60px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.desc-whale-comm {
+  position: absolute;
+  left: 800px;
+  top: 8471px;
+  width: 791px;
+  font-size: 20px;
+  line-height: 60px;
+}
+
+.particles-2 {
+  left: 274px;
+  top: 8997px;
+  width: 1373px;
+  height: 1373px;
+  opacity: 0.2;
+}
+
+.particles-3 {
+  left: 948px;
+  top: 8997px;
+  width: 48px;
+  height: 1373px;
+  opacity: 0.2;
+}
+
+/* --- Section 5 (y: 10100 - 11200) --- */
+.mutation-title {
+  top: 10189px;
+  width: 796px;
+  font-size: 32px;
+  line-height: 72px;
+  text-align: center;
+}
+
+.mutation-desc {
+  top: 10458px;
+  width: 796px;
+  font-size: 20px;
+  line-height: 60px;
+  letter-spacing: -1.6px;
+  text-align: center;
+}
+
+.whale-5 {
+  left: 570px;
+  top: 11042px;
+  width: 481.4px;
+  height: 722px;
+  opacity: 0.6;
+}
+
+/* --- Section 6 & recovery (y: 11200 - 14500) --- */
+.story-phrase {
+  position: absolute;
+  font-size: 20px;
+  line-height: 60px;
+  letter-spacing: -1.6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.phrase-1 {
+  left: 870px;
+  top: 11274px;
+  width: 342px;
+}
+
+.whale-4 {
+  left: 1051px;
+  top: 11474px;
+  width: 481.4px;
+  height: 722px;
+  opacity: 0.8;
+}
+
+.whale-3 {
+  left: 343px;
+  top: 11810px;
+  width: 572px;
+  height: 858px;
+  opacity: 0.8;
+}
+
+.whale-2 {
+  left: 629px;
+  top: 12276px;
+  width: 844px;
+  height: 1266px;
+  opacity: 1.0;
+}
+
+.phrase-2 {
+  left: 630px;
+  top: 12520px;
+  width: 303px;
+}
+
+.whale-6 {
+  left: 1186px;
+  top: 13118px;
+  width: 398.7px;
+  height: 598px;
+  opacity: 0.6;
+}
+
+.final-title {
+  top: 13680px;
+  width: 663px;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 124px;
+  text-align: center;
+}
+
+/* --- Footer (y: 14537 - 14729) --- */
+.footer {
+  position: absolute;
+  left: 0;
+  top: 14537px;
+  width: 1920px;
+  height: 192px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-bg-footer);
+  z-index: 1;
+}
+
+.footer-text {
+  position: relative;
+  z-index: 2;
+  font-size: 20px;
+  line-height: 36px;
+  letter-spacing: -1.6px;
+  text-align: center;
+}
+
+#fluid-overlay-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 50;
+  /* Above regular contents, below sidebar */
+  pointer-events: none;
+  /* Make clicking pass through the canvas */
+}
